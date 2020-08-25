@@ -15,9 +15,9 @@ opencv/
 convnet/
 decaf/
 submission/
-cfg/
 darknet
 .fuse*
+*.weights
 
 # OS Generated #
 .DS_Store*
@@ -25,3 +25,4 @@ ehthumbs.db
 Icon?
 Thumbs.db
 *.swp
+
