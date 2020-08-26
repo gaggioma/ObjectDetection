@@ -10,7 +10,6 @@
 *.lib
 *.dylib
 mnist/
-data/
 caffe/
 grasp/
 images/
@@ -18,7 +17,6 @@ opencv/
 convnet/
 decaf/
 submission/
-cfg/
 build/darknet/*
 build_*/
 !build/darknet/YoloWrapper.cs
@@ -34,8 +32,7 @@ build/.ninja_deps
 build/.ninja_log
 build/Makefile
 
-convolutionModel/*
-*.weights
+convolutionModel/
 
 # OS Generated #
 .DS_Store*
