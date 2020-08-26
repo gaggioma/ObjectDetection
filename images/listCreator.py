@@ -23,7 +23,7 @@ def createList(rootFolder, name):
         for singlefile in onlyfiles:
             filename, file_extension = os.path.splitext(singlefile)
             if file_extension == ".jpg":
-                file.write(os.path.join("data", name, folderName, filename + file_extension) + "\n")
+                file.write("data" + "/" + name + "/" + folderName + "/" + filename + file_extension + "\n")
 
     file.close()
 
