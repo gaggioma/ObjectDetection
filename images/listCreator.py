@@ -59,7 +59,16 @@ def createBBox(rootFolder, name):
                 file.write(folderName + " " + str(0.5) + " " + str(0.5) + " " + str(1) + " " + str(1) )
                 file.close()
 
-def filesCount(rootFolder, name, classesNum):
+def createCfg(rootFolder, name, classesNum, cfgFile):
+
+    #read .cfg file vith variables
+    cfg = open(cfgFile, "rt")
+    cfgData = cfg.read()
+    cfg.close()
+
+    cfgName, cfg_file_extension = os.path.splitext(os.path.basename(cfgFile))
+    cfgOut = open(os.path.join(rootFolder, cfgName + "-out" + ".cfg"), "wt")
+
 
     #Get all folder in rootFolder
     folderList = [name for name in os.listdir(rootFolder) if os.path.isdir(os.path.join(rootFolder, name)) ]
@@ -82,29 +91,33 @@ def filesCount(rootFolder, name, classesNum):
             if file_extension != ".txt":
                 counter = counter + 1
 
-    file = open(os.path.join(rootFolder, "cfg.txt"), 'w')
+    #Batch size and steps val
     batches_size = counter
     if int(classesNum) * 2000 > counter:
         batches_size = int(classesNum) * 2000
 
     if batches_size > 6000:
-        file.write("max_batches=" + str(batches_size) + "\n")
-        file.write("steps=" + str(round(0.8*batches_size)) + "," + str(round(0.9*batches_size)) + "\n")
+        cfgData = cfgData.replace('max_batches_val', str(batches_size))
+        cfgData = cfgData.replace('steps_val', str(round(0.8*batches_size)) + "," + str(round(0.9*batches_size)))
+
     else:
-        file.write("max_batches=6000" + "\n")
-        file.write("steps=" + str(round(0.8*6000)) + "," + str(round(0.9*6000)) + "\n")
+        cfgData = cfgData.replace('max_batches_val', 6000)
+        cfgData = cfgData.replace('steps_val', str(round(0.8*6000)) + "," + str(round(0.9*6000)))
     
     #filters=(classes + 5)x3 in the 3
     if int(classesNum) == 1:
-        file.write("filters=18" + "\n")
+        cfgData = cfgData.replace('filters_val', 18)
     elif int(classesNum) == 2:
-        file.write("filters=21" + "\n")
+        cfgData = cfgData.replace('filters_val', 21)
     else:
-        file.write("filters=" + str((int(classesNum) + 5)*3) + "\n")
+        cfgData = cfgData.replace('filters_val', str((int(classesNum) + 5)*3))
 
-    file.close()
+    #Classes
+    cfgData = cfgData.replace('classes_val', classesNum)
 
-
+    #Write in cfgOut
+    cfgOut.write(cfgData)
+    cfgOut.close()
 
 if __name__ == '__main__':
 
@@ -112,6 +125,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
 
     # Add the arguments to the parser
+    ap.add_argument( "-r", "--folderRoot", required=True, help="Set absolute folder path")
     ap.add_argument( "-n", "--folderName", required=True, choices=["train", "validation"],  help="Chose the type of dataset")
     ap.add_argument( "-t", "--type", required=True, choices=["list", "bbox", "count"],  help="Choose type of elaboration")
     ap.add_argument( "-c", "--classes", required=False, help="Number of classes")
@@ -121,7 +135,8 @@ if __name__ == '__main__':
     typeVar = args["type"]
 
     #Script folder
-    rootFolder = os.path.join(pathlib.Path(__file__).parent.absolute(), name) #os.path.join(".", "OID", "Dataset", name)
+    rootFolder = os.path.join(args["folderRoot"], name) #os.path.join(pathlib.Path(__file__).parent.absolute(), name)
+    print(pathlib.Path(__file__).parent.absolute())
 
     if typeVar == "list":
         createList(rootFolder, name)
@@ -129,6 +144,6 @@ if __name__ == '__main__':
         createBBox(rootFolder, name)
     elif typeVar == "count":
         classesNum = args["classes"]
-        filesCount(rootFolder, name, classesNum)
+        createCfg(rootFolder, name, classesNum, "images\yolov4-custom-var.cfg")
 
     print("complete!!")
