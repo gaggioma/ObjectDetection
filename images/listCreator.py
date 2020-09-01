@@ -144,6 +144,6 @@ if __name__ == '__main__':
         createBBox(rootFolder, name)
     elif typeVar == "count":
         classesNum = args["classes"]
-        createCfg(rootFolder, name, classesNum, "images\yolov4-custom-var.cfg")
+        createCfg(rootFolder, name, classesNum, "images\\yolov4-custom-var.cfg")
 
     print("complete!!")
