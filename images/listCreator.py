@@ -70,7 +70,7 @@ def createCfg(rootFolder, cfgFile):
     cfgOut = open(os.path.join(rootFolder, cfgName + "-out" + ".cfg"), "wt")
 
     #file with classes list
-    classesFile = open(os.path.join(rootFolder, "obj.name"), "wt")
+    classesFile = open(os.path.join(rootFolder, "obj.names"), "wt")
 
     #Get all folder in rootFolder
     folderList = [name for name in os.listdir(rootFolder) if os.path.isdir(os.path.join(rootFolder, name)) ]
