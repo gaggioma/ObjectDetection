@@ -31,7 +31,7 @@ def createList(rootFolder, name):
 
     file.close()
 
-def createBBox(rootFolder, name):
+def createBBox(rootFolder):
 
     #Get all folder in rootFolder
     folderList = [name for name in os.listdir(rootFolder) if os.path.isdir(os.path.join(rootFolder, name)) ]
@@ -59,7 +59,7 @@ def createBBox(rootFolder, name):
                 file.write(folderName + " " + str(0.5) + " " + str(0.5) + " " + str(1) + " " + str(1) )
                 file.close()
 
-def createCfg(rootFolder, name, classesNum, cfgFile):
+def createCfg(rootFolder, cfgFile):
 
     #read .cfg file vith variables
     cfg = open(cfgFile, "rt")
@@ -69,13 +69,20 @@ def createCfg(rootFolder, name, classesNum, cfgFile):
     cfgName, cfg_file_extension = os.path.splitext(os.path.basename(cfgFile))
     cfgOut = open(os.path.join(rootFolder, cfgName + "-out" + ".cfg"), "wt")
 
+    #file with classes list
+    classesFile = open(os.path.join(rootFolder, "obj.name"), "wt")
 
     #Get all folder in rootFolder
     folderList = [name for name in os.listdir(rootFolder) if os.path.isdir(os.path.join(rootFolder, name)) ]
 
     #for each folder
     counter = 0
+    classesNum = 0
     for folderName in folderList:
+
+        #Write class in obj.class
+        classesNum = classesNum + 1
+        classesFile.write(folderName + "\n")
 
         folderPath = os.path.join(rootFolder, folderName)
         fileList = [name for name in os.listdir(folderPath) if os.path.isfile(os.path.join(folderPath, name))]
@@ -93,8 +100,8 @@ def createCfg(rootFolder, name, classesNum, cfgFile):
 
     #Batch size and steps val
     batches_size = counter
-    if int(classesNum) * 2000 > counter:
-        batches_size = int(classesNum) * 2000
+    if classesNum * 2000 > counter:
+        batches_size = classesNum * 2000
 
     if batches_size > 6000:
         cfgData = cfgData.replace('max_batches_val', str(batches_size))
@@ -105,19 +112,31 @@ def createCfg(rootFolder, name, classesNum, cfgFile):
         cfgData = cfgData.replace('steps_val', str(round(0.8*6000)) + "," + str(round(0.9*6000)))
     
     #filters=(classes + 5)x3 in the 3
-    if int(classesNum) == 1:
+    if classesNum == 1:
         cfgData = cfgData.replace('filters_val', 18)
-    elif int(classesNum) == 2:
+    elif classesNum == 2:
         cfgData = cfgData.replace('filters_val', 21)
     else:
-        cfgData = cfgData.replace('filters_val', str((int(classesNum) + 5)*3))
+        cfgData = cfgData.replace('filters_val', str((classesNum + 5)*3))
 
     #Classes
-    cfgData = cfgData.replace('classes_val', classesNum)
+    cfgData = cfgData.replace('classes_val', str(classesNum))
+
+    #.data file
+    dataFile = open("images\\obj-var.data", "rt")
+    dataStr = dataFile.read()
+    dataFile.close()
+    dataStr = dataStr.replace("classes_val", str(classesNum))
+    dataName, data_file_extension = os.path.splitext(os.path.basename("images\\obj-var.data"))
+    dataOut = open(os.path.join(rootFolder, dataName + "-out" + data_file_extension), "wt")
+    dataOut.write(dataStr)
+    dataOut.close()
 
     #Write in cfgOut
     cfgOut.write(cfgData)
     cfgOut.close()
+
+    classesFile.close()
 
 if __name__ == '__main__':
 
@@ -128,7 +147,6 @@ if __name__ == '__main__':
     ap.add_argument( "-r", "--folderRoot", required=True, help="Set absolute folder path")
     ap.add_argument( "-n", "--folderName", required=True, choices=["train", "validation"],  help="Chose the type of dataset")
     ap.add_argument( "-t", "--type", required=True, choices=["list", "bbox", "count"],  help="Choose type of elaboration")
-    ap.add_argument( "-c", "--classes", required=False, help="Number of classes")
 
     args = vars(ap.parse_args())
     name = args["folderName"]
@@ -141,9 +159,8 @@ if __name__ == '__main__':
     if typeVar == "list":
         createList(rootFolder, name)
     elif typeVar == "bbox" :
-        createBBox(rootFolder, name)
+        createBBox(rootFolder)
     elif typeVar == "count":
-        classesNum = args["classes"]
-        createCfg(rootFolder, name, classesNum, "images\\yolov4-custom-var.cfg")
+        createCfg(rootFolder, "images\\yolov4-custom-var.cfg")
 
     print("complete!!")
