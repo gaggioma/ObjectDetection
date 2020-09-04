@@ -1,5 +1,5 @@
 classes = classes_val
 train  = data/train/train.txt
 valid  = data/validation/validation.txt
-names = data/obj.names
+names = cfg/obj.names
 backup = backup/
