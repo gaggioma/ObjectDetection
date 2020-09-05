@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["--folderRoot", "C:\\Users\\magaggio\\Desktop\\MNIST-JPG-master\\MNIST-JPG-master\\output", "--folderName", "train", "--type", "count"]
+            "args": ["--folderRoot", "C:\\Users\\magaggio\\Desktop\\MNIST-JPG-master\\MNIST-JPG-master\\output\\myImages", "--folderName", "train", "--type", "cfg"]
         }
     ]
 }

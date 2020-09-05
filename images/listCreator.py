@@ -4,6 +4,7 @@ import os
 import pathlib
 
 import cv2
+from shutil import copyfile, rmtree
 
 def createList(rootFolder, name):
 
@@ -56,7 +57,7 @@ def createBBox(rootFolder):
                 #Img.txt
                 file = open(os.path.join(folderPath, filename + ".txt"), 'w')
                 #Write <classname> <x_center> <y_center> <width> <height>
-                file.write(folderName + " " + str(0.5) + " " + str(0.5) + " " + str(1) + " " + str(1) )
+                file.write(folderName + " " + str(0.5) + " " + str(0.5) + " " + str(1.0) + " " + str(1.0) )
                 file.close()
 
 def createCfg(rootFolder, cfgFile):
@@ -66,6 +67,7 @@ def createCfg(rootFolder, cfgFile):
     cfgData = cfg.read()
     cfg.close()
 
+    #Create new .cfg file
     cfgName, cfg_file_extension = os.path.splitext(os.path.basename(cfgFile))
     cfgOut = open(os.path.join(rootFolder, cfgName + "-out" + ".cfg"), "wt")
 
@@ -138,6 +140,39 @@ def createCfg(rootFolder, cfgFile):
 
     classesFile.close()
 
+def copy(pathSource, pathTarget, count):
+
+    #Remove all folders in target and re create
+    if os.path.exists(pathTarget):
+        rmtree(pathTarget)
+    os.mkdir(pathTarget)
+
+    #Create target folder like in source
+    folderList = [name for name in os.listdir(pathSource) if os.path.isdir(os.path.join(pathSource, name)) ]
+    for folderName in folderList:
+        os.mkdir(os.path.join(pathTarget, folderName))
+
+    #copy element [1, count] from source to target
+    for folderName in folderList:
+        print("Creating " + str(count) + " files in " + folderName)
+        folderPath = os.path.join(pathSource, folderName)
+        fileListSource = [name for name in os.listdir(folderPath) if os.path.isfile(os.path.join(folderPath, name))]
+        fileCount = 0
+        for fileSource in fileListSource:
+
+            #Process only .jpg files
+            filename, file_extension = os.path.splitext(fileSource)
+
+            if file_extension == ".jpg":
+            
+                #Copy file form source to target
+                copyfile(os.path.join(pathSource, folderName, fileSource), os.path.join(pathTarget, folderName, fileSource))
+                fileCount = fileCount + 1
+                if fileCount == count:
+                    break
+           
+
+
 if __name__ == '__main__':
 
     #Get argument
@@ -146,7 +181,7 @@ if __name__ == '__main__':
     # Add the arguments to the parser
     ap.add_argument( "-r", "--folderRoot", required=True, help="Set absolute folder path")
     ap.add_argument( "-n", "--folderName", required=True, choices=["train", "validation"],  help="Chose the type of dataset")
-    ap.add_argument( "-t", "--type", required=True, choices=["list", "bbox", "count"],  help="Choose type of elaboration")
+    ap.add_argument( "-t", "--type", required=True, choices=["list", "bbox", "cfg", "cutImages"],  help="Choose type of elaboration")
 
     args = vars(ap.parse_args())
     name = args["folderName"]
@@ -160,7 +195,9 @@ if __name__ == '__main__':
         createList(rootFolder, name)
     elif typeVar == "bbox" :
         createBBox(rootFolder)
-    elif typeVar == "count":
+    elif typeVar == "cfg":
         createCfg(rootFolder, "images\\yolov4-custom-var.cfg")
+    elif typeVar == "cutImages":
+        copy(rootFolder, os.path.join(args["folderRoot"], "myImages" , name), 100)
 
     print("complete!!")
