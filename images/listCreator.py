@@ -110,14 +110,14 @@ def createCfg(rootFolder, cfgFile):
         cfgData = cfgData.replace('steps_val', str(round(0.8*batches_size)) + "," + str(round(0.9*batches_size)))
 
     else:
-        cfgData = cfgData.replace('max_batches_val', 6000)
+        cfgData = cfgData.replace('max_batches_val', str(6000))
         cfgData = cfgData.replace('steps_val', str(round(0.8*6000)) + "," + str(round(0.9*6000)))
     
     #filters=(classes + 5)x3 in the 3
     if classesNum == 1:
-        cfgData = cfgData.replace('filters_val', 18)
+        cfgData = cfgData.replace('filters_val', str(18))
     elif classesNum == 2:
-        cfgData = cfgData.replace('filters_val', 21)
+        cfgData = cfgData.replace('filters_val', str(21))
     else:
         cfgData = cfgData.replace('filters_val', str((classesNum + 5)*3))
 
