@@ -32,34 +32,6 @@ def createList(rootFolder, name):
 
     file.close()
 
-def createBBox(rootFolder):
-
-    #Get all folder in rootFolder
-    folderList = [name for name in os.listdir(rootFolder) if os.path.isdir(os.path.join(rootFolder, name)) ]
-
-    #for each folder
-    for folderName in folderList:
-
-        folderPath = os.path.join(rootFolder, folderName)
-        fileList = [name for name in os.listdir(folderPath) if os.path.isfile(os.path.join(folderPath, name))]
-
-        print("Analize folder: " + folderName)
-
-        #for each image into folder
-        for fileImg in fileList:
-
-            filename, file_extension = os.path.splitext(fileImg)
-
-            #delete .txt
-            if file_extension == ".txt":
-                os.remove(os.path.join(folderPath, fileImg))
-            else:
-                #Img.txt
-                file = open(os.path.join(folderPath, filename + ".txt"), 'w')
-                #Write <classname> <x_center> <y_center> <width> <height>
-                file.write(folderName + " " + str(0.5) + " " + str(0.5) + " " + str(1.0) + " " + str(1.0) )
-                file.close()
-
 def createCfg(rootFolder, cfgFile):
 
     #read .cfg file vith variables
@@ -125,11 +97,11 @@ def createCfg(rootFolder, cfgFile):
     cfgData = cfgData.replace('classes_val', str(classesNum))
 
     #.data file
-    dataFile = open("images\\obj-var.data", "rt")
+    dataFile = open("obj-var.data", "rt")
     dataStr = dataFile.read()
     dataFile.close()
     dataStr = dataStr.replace("classes_val", str(classesNum))
-    dataName, data_file_extension = os.path.splitext(os.path.basename("images\\obj-var.data"))
+    dataName, data_file_extension = os.path.splitext(os.path.basename("obj-var.data"))
     dataOut = open(os.path.join(rootFolder, dataName + "-out" + data_file_extension), "wt")
     dataOut.write(dataStr)
     dataOut.close()
@@ -181,7 +153,9 @@ if __name__ == '__main__':
     # Add the arguments to the parser
     ap.add_argument( "-r", "--folderRoot", required=True, help="Set absolute folder path")
     ap.add_argument( "-n", "--folderName", required=True, choices=["train", "validation"],  help="Chose the type of dataset")
-    ap.add_argument( "-t", "--type", required=True, choices=["list", "bbox", "cfg", "cutImages"],  help="Choose type of elaboration")
+    ap.add_argument( "-t", "--type", required=True, choices=["list", "cfg", "cutImages"],  help="Choose type of elaboration")
+
+    ap.add_argument( "-c", "--numberofsamples", required=False, help="Number of folder to create")
 
     args = vars(ap.parse_args())
     name = args["folderName"]
@@ -189,15 +163,12 @@ if __name__ == '__main__':
 
     #Script folder
     rootFolder = os.path.join(args["folderRoot"], name) #os.path.join(pathlib.Path(__file__).parent.absolute(), name)
-    print(pathlib.Path(__file__).parent.absolute())
 
     if typeVar == "list":
         createList(rootFolder, name)
-    elif typeVar == "bbox" :
-        createBBox(rootFolder)
     elif typeVar == "cfg":
-        createCfg(rootFolder, "images\\yolov4-custom-var.cfg")
+        createCfg(rootFolder, "yolov4-custom-var.cfg")
     elif typeVar == "cutImages":
-        copy(rootFolder, os.path.join(args["folderRoot"], "myImages" , name), 100)
+        copy(rootFolder, os.path.join(args["folderRoot"], "myImages" , name), int(args["numberofsamples"]))
 
     print("complete!!")

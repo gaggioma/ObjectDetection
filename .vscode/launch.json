@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["--folderRoot", "C:\\Users\\magaggio\\Desktop\\v1_training.tar\\v1_training", "--folderName", "train", "--type", "cfg"]
+            "args": ["--folderRoot", "C:\\Users\\magaggio\\Desktop\\MNIST-JPG-master\\MNIST-JPG-master\\output", "--folderName", "validation", "--type", "cutImages"]
         }
     ]
 }
