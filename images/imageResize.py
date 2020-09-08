@@ -39,7 +39,7 @@ def image_resize(imagePath, width = None, height = None, inter = cv2.INTER_AREA)
     # return the resized image
     return resized
 
-def insertIntoBlankImage(rawimg, new_size=(416, 416), invert=False):
+def insertIntoBlankImage(rawimg, new_size=(512, 512), invert=False):
 
     #get all files
     #img_files = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
@@ -63,7 +63,13 @@ def insertIntoBlankImage(rawimg, new_size=(416, 416), invert=False):
     img_new.fill(255)
 
     #Insert image in the center of blank image
-    img_new[int((h_new-h_img)/2):int((h_new+h_img)/2), int((w_new-w_img)/2):int((w_new+w_img)/2)] = rawimg
+    if h_new >= h_img and w_new >= w_img:
+        img_new[int((h_new-h_img)/2):int((h_new+h_img)/2), int((w_new-w_img)/2):int((w_new+w_img)/2)] = rawimg
+    else:
+        print("Resized image too large")
+        print("Original (h, w)= (" + str(h_img) + ", " + str(w_img) + ")")
+        print("New (h, w)= (" + str(h_new) + ", " + str(w_new) + ")")
+        return []
 
     return img_new
 
@@ -123,15 +129,17 @@ if __name__ == '__main__':
                 #Insert into black image
                 img_new = insertIntoBlankImage(img_resized)
 
-                #Save new file
-                cv2.imwrite(os.path.join(pathSource, folderName, folder, name + "_resized_" + str(width) + extension), img_new)
-                (h_resized, w_resized) = img_resized.shape[:2]
-                (h_new, w_new) = img_new.shape[:2]
-                #bbox file
-                file = open(os.path.join(pathSource, folderName, folder, name + "_resized_" + str(width) + ".txt"), 'w')
-                #Write <classname> <x_center> <y_center> <width> <height>
-                file.write(folder + " " + str(0.5) + " " + str(0.5) + " " + str(w_resized/w_new) + " " + str(h_resized/h_new) )
-                file.close()
+                if len(img_new) != 0:
+
+                    #Save new file
+                    cv2.imwrite(os.path.join(pathSource, folderName, folder, name + "_resized_" + str(width) + extension), img_new)
+                    (h_resized, w_resized) = img_resized.shape[:2]
+                    (h_new, w_new) = img_new.shape[:2]
+                    #bbox file
+                    file = open(os.path.join(pathSource, folderName, folder, name + "_resized_" + str(width) + ".txt"), 'w')
+                    #Write <classname> <x_center> <y_center> <width> <height>
+                    file.write(folder + " " + str(0.5) + " " + str(0.5) + " " + str(w_resized/w_new) + " " + str(h_resized/h_new) )
+                    file.close()
 
             #Remove origianl file
             os.remove(os.path.join(pathSource, folderName, folder, file_name))
