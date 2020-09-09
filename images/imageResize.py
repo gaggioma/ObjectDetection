@@ -96,6 +96,7 @@ if __name__ == '__main__':
     
     #Get all folders in folderRoot/name
     folderList = [name for name in os.listdir(os.path.join(pathSource, folderName)) if os.path.isdir(os.path.join(pathSource, folderName, name)) ]
+    folderCount = 0
     for folder in folderList:
 
         print("processing folder: " + folder)
@@ -138,11 +139,13 @@ if __name__ == '__main__':
                     #bbox file
                     file = open(os.path.join(pathSource, folderName, folder, name + "_resized_" + str(width) + ".txt"), 'w')
                     #Write <classname> <x_center> <y_center> <width> <height>
-                    file.write(folder + " " + str(0.5) + " " + str(0.5) + " " + str(w_resized/w_new) + " " + str(h_resized/h_new) )
+                    file.write(str(folderCount) + " " + str(0.5) + " " + str(0.5) + " " + str(w_resized/w_new) + " " + str(h_resized/h_new) )
                     file.close()
 
             #Remove origianl file
             os.remove(os.path.join(pathSource, folderName, folder, file_name))
+            
+        folderCount = folderCount + 1
 
     print("complete!!")
 
