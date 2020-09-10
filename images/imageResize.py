@@ -86,7 +86,7 @@ if __name__ == '__main__':
     ap.add_argument( "-n", "--folderName", required=True, choices=["train", "validation"],  help="Chose the type of dataset")
 
     #Vector of width rescalling image
-    basewidth = [28, 56, 112, 224, 392]
+    basewidth = [24, 48, 72, 77, 80, 96, 120, 144, 168, 192, 216, 240, 264, 288, 312, 336, 360, 384]
 
     args = vars(ap.parse_args())
     pathSource = args["folderRoot"]

@@ -9,20 +9,20 @@ import os
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", required=True,	help="path to input image")
 ap.add_argument("-y", "--yolo", required=True,	help="base path to YOLO directory")
-ap.add_argument("-c", "--confidence", type=float, default=0.5,	help="minimum probability to filter weak detections")
+ap.add_argument("-c", "--confidence", type=float, default=0.1,	help="minimum probability to filter weak detections")
 ap.add_argument("-t", "--threshold", type=float, default=0.3,	help="threshold when applying non-maxima suppression")
 args = vars(ap.parse_args())
 
 # load the COCO class labels our YOLO model was trained on
-labelsPath = os.path.sep.join([args["yolo"], "coco.names"])
+labelsPath = os.path.sep.join([args["yolo"], "obj.names"])
 LABELS = open(labelsPath).read().strip().split("\n")
 # initialize a list of colors to represent each possible class label
 np.random.seed(42)
 COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8")
 
 # derive the paths to the YOLO weights and model configuration
-weightsPath = os.path.sep.join([args["yolo"], "yolov3.weights"])
-configPath = os.path.sep.join([args["yolo"], "yolov3.cfg"])
+weightsPath = os.path.sep.join([args["yolo"], "yolov4-custom-var-out_last.weights"])
+configPath = os.path.sep.join([args["yolo"], "yolov4-custom-var-out.cfg"])
 # load our YOLO object detector trained on COCO dataset (80 classes)
 print("[INFO] loading YOLO from disk...")
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
@@ -30,8 +30,8 @@ net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 # load our input image and grab its spatial dimensions
 image = cv2.imread(args["image"])
 (H, W) = image.shape[:2]
-image = cv2.resize(image, (int(H*0.3), int(W*0.3)))
-(H, W) = image.shape[:2]
+#image = cv2.resize(image, (int(H*0.3), int(W*0.3)))
+#(H, W) = image.shape[:2]
 
 # determine only the *output* layer names that we need from YOLO
 ln = net.getLayerNames()
