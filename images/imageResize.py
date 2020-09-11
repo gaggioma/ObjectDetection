@@ -39,7 +39,7 @@ def image_resize(imagePath, width = None, height = None, inter = cv2.INTER_AREA)
     # return the resized image
     return resized
 
-def insertIntoBlankImage(rawimg, new_size=(512, 512), invert=False):
+def insertIntoBlankImage(rawimg, new_size=(620, 620), invert=False):
 
     #get all files
     #img_files = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
@@ -84,6 +84,7 @@ if __name__ == '__main__':
     # Add the arguments to the parser
     ap.add_argument( "-r", "--folderRoot", required=True, help="Set absolute folder path")
     ap.add_argument( "-n", "--folderName", required=True, choices=["train", "validation"],  help="Chose the type of dataset")
+    ap.add_argument( "-s", "--imageSize", required=True, help="Chose image size")
 
     #Vector of width rescalling image
     basewidth = [24, 48, 72, 77, 80, 96, 120, 144, 168, 192, 216, 240, 264, 288, 312, 336, 360, 384]
@@ -91,8 +92,7 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
     pathSource = args["folderRoot"]
     folderName = args["folderName"]
-
-    
+    size = int(args["imageSize"]) 
     
     #Get all folders in folderRoot/name
     folderList = [name for name in os.listdir(os.path.join(pathSource, folderName)) if os.path.isdir(os.path.join(pathSource, folderName, name)) ]
@@ -128,7 +128,7 @@ if __name__ == '__main__':
                 img_resized = image_resize(fileNameComplete, width)        
 
                 #Insert into black image
-                img_new = insertIntoBlankImage(img_resized)
+                img_new = insertIntoBlankImage(img_resized, (size,size))
 
                 if len(img_new) != 0:
 

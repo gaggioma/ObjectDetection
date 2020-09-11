@@ -7,8 +7,8 @@ echo Creating myImages...
 echo Create myImages succesfully!!
 
 echo Resizing image...
-python3 .\imageResize.py -r "C:\\Users\\magaggio\\Desktop\\NumberDataset" -n train
-python3 .\imageResize.py -r "C:\\Users\\magaggio\\Desktop\\NumberDataset" -n validation
+python3 .\imageResize.py -r "C:\\Users\\magaggio\\Desktop\\NumberDataset" -n train -s 620
+python3 .\imageResize.py -r "C:\\Users\\magaggio\\Desktop\\NumberDataset" -n validation -s 620
 echo Resizing succesfully!!
 
 echo Listing file...
