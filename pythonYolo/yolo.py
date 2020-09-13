@@ -9,7 +9,7 @@ import os
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", required=True,	help="path to input image")
 ap.add_argument("-y", "--yolo", required=True,	help="base path to YOLO directory")
-ap.add_argument("-c", "--confidence", type=float, default=0.1,	help="minimum probability to filter weak detections")
+ap.add_argument("-c", "--confidence", type=float, default=0.01,	help="minimum probability to filter weak detections")
 ap.add_argument("-t", "--threshold", type=float, default=0.3,	help="threshold when applying non-maxima suppression")
 args = vars(ap.parse_args())
 
@@ -21,7 +21,7 @@ np.random.seed(42)
 COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8")
 
 # derive the paths to the YOLO weights and model configuration
-weightsPath = os.path.sep.join([args["yolo"], "yolov4-custom-var-out_last.weights"])
+weightsPath = os.path.sep.join([args["yolo"], "yolov4-custom-var-out_6000.weights"])
 configPath = os.path.sep.join([args["yolo"], "yolov4-custom-var-out.cfg"])
 # load our YOLO object detector trained on COCO dataset (80 classes)
 print("[INFO] loading YOLO from disk...")
