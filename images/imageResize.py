@@ -87,7 +87,7 @@ if __name__ == '__main__':
     ap.add_argument( "-s", "--imageSize", required=True, help="Chose image size")
 
     #Vector of width rescalling image
-    basewidth = [24, 48, 72, 77, 80, 96, 120, 144, 168, 192, 216, 240, 264, 288, 312, 336, 360, 384]
+    basewidth = [24, 48, 72, 77, 78, 79, 80, 81, 82, 83, 84, 85, 96, 120, 144, 168, 192, 216, 240, 264, 288, 312, 336, 360, 384]
 
     args = vars(ap.parse_args())
     pathSource = args["folderRoot"]
