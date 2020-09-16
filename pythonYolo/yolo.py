@@ -4,6 +4,7 @@ import argparse
 import time
 import cv2
 import os
+from sudokuSolver import *
 
 def bk():
 
@@ -110,27 +111,59 @@ def bk():
 
 def analizeImage(sudoku, net, LABELS, COLORS, confidence, threshold):
 
-	grid_size = [72, 72]
+	#size of shifting window
+	(wW, wH) = (72, 72)
+
+	#Number of point per dimension
+	points = 9
+
+	#Create a grid to store result
+	grid = np.zeros([points, points])
+
+	#Imge shape
 	#sudoku = cv2.resize(sudoku, (450,450))
 	(H, W) = sudoku.shape[:2]
-	print(sudoku.shape[:2])
-	grid = np.zeros(grid_size)
-	(H_grid, W_grid) = grid.shape[:2]
-	for y in range(int(H/H_grid)):
-		for x in range(int(W/W_grid)):
-			if(x == 0 and y == 0):
-				image = sudoku[y*grid_size[0]:(y+1)*grid_size[0],x*grid_size[1]:(x+1)*grid_size[1]]
-			if x== 0 and y != 0:
-				image = sudoku[y*grid_size[0]/2:(y+1)*grid_size[0],x*grid_size[1]:(x+1)*grid_size[1]]
-			print("x: " + str(x) + " y: " + str(y) + "size: " + str(float(image.sum())))
-			if image.sum() > 25000:    
-				grid[y][x] = prediction(image, net, LABELS, COLORS, confidence, threshold)
+
+	#grid dimension
+	(gH, gW) = (int(H/points), int(W/points))
+	print("Analyzing image and prediction...")
+	for r in range(points):
+		for c in range(points):
+
+			r_start = int(r*gH+gH/2-wH/2)
+			r_stop = int(r*gH+gH/2 + wH/2)
+			c_start = int(c*gW+gW/2-wW/2)
+			c_stop = int(c*gW+gW/2+wW/2)
+			if r_start < 0:
+				r_start = 0
+			if r_stop > H:
+				r_stop = H
+			if c_start < 0:
+				c_start = 0
+			if c_stop > W:
+				c_stop = W
+
+			#print("r_start: " + str(r_start) + " r_stop: " + str(r_stop) + " c_start:" + str(c_start) + " c_stop: " + str(c_stop))
+
+			image = sudoku[r_start : r_stop , c_start : c_stop] - 255
+			#print("r_start: " + str(r_start) + " r_stop: " + str(r_stop) + " c_start:" + str(c_start) + " c_stop: " + str(c_stop) + "size: " + str(float(image.sum())))
+			if image.sum() > 1000116.0:
+				grid[r][c] = prediction(image+255, net, LABELS, COLORS, confidence, threshold)
+				grid[r][c] = 1
+				#print("c:" + str(c) + " r:" + str(r) + " number")
 			else:
-				grid[y][x] = 0    
+				grid[r][c] = 0
+			#print(image)
+			#cv2.imshow("Image", image+255)
+			#cv2.waitKey(0)
+	print("Complete")
 	grid =  grid.astype(int)
+	solve(grid)
+	#print("___________________")
+	#print_board(grid)
 	print(grid)
 
-def prediction(image, net, LABELS, COLORS, confidence, threshold):
+def prediction(image, net, LABELS, COLORS, confidenceParam, threshold):
 	
 	(H, W) = image.shape[:2]
 	#image = cv2.resize(image, (620, 620))
@@ -167,7 +200,7 @@ def prediction(image, net, LABELS, COLORS, confidence, threshold):
 			confidence = scores[classID]
 			# filter out weak predictions by ensuring the detected
 			# probability is greater than the minimum probability
-			if confidence > confidence:
+			if confidence > confidenceParam:
 				# scale the bounding box coordinates back relative to the
 				# size of the image, keeping in mind that YOLO actually
 				# returns the center (x, y)-coordinates of the bounding
@@ -186,7 +219,7 @@ def prediction(image, net, LABELS, COLORS, confidence, threshold):
 
 	# apply non-maxima suppression to suppress weak, overlapping bounding
 	# boxes
-	idxs = cv2.dnn.NMSBoxes(boxes, confidences, confidence, threshold)
+	idxs = cv2.dnn.NMSBoxes(boxes, confidences, confidenceParam, threshold)
 
 	# ensure at least one detection exists
 	if len(idxs) > 0:
@@ -201,6 +234,9 @@ def prediction(image, net, LABELS, COLORS, confidence, threshold):
 			text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
 			print(text)
 			return(LABELS[classIDs[i]])
+	# show the output image
+	cv2.imshow("Image", image)
+	cv2.waitKey(0)
 
 if __name__ == '__main__':
 
@@ -234,5 +270,5 @@ if __name__ == '__main__':
 	threshold = args["threshold"]
 
 	analizeImage(image, net, LABELS, COLORS, confidence, threshold)
-
-	#prediction(image, net, LABELS, COLORS)
+	#bk()
+	#prediction(image, net, LABELS, COLORS,  confidence, threshold)

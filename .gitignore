@@ -3,3 +3,4 @@
 *.weights
 *.names
 *.cfg
+pythonYolo/__pycache__/*
