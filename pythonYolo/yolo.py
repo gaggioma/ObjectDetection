@@ -109,7 +109,7 @@ def bk():
 	cv2.waitKey(0)
 
 
-def analizeImage(sudoku, net, LABELS, COLORS, confidence, threshold):
+def analizeImage(sudoku, net, LABELS, COLORS, confidence, threshold, numberFolder):
 
 	#size of shifting window
 	(wW, wH) = (72, 72)
@@ -126,6 +126,7 @@ def analizeImage(sudoku, net, LABELS, COLORS, confidence, threshold):
 
 	#grid dimension
 	(gH, gW) = (int(H/points), int(W/points))
+
 	print("Analyzing image and prediction...")
 	for r in range(points):
 		for c in range(points):
@@ -143,25 +144,51 @@ def analizeImage(sudoku, net, LABELS, COLORS, confidence, threshold):
 			if c_stop > W:
 				c_stop = W
 
-			#print("r_start: " + str(r_start) + " r_stop: " + str(r_stop) + " c_start:" + str(c_start) + " c_stop: " + str(c_stop))
+			#Cut image along window bounds
+			image = sudoku[r_start : r_stop , c_start : c_stop]
 
-			image = sudoku[r_start : r_stop , c_start : c_stop] - 255
-			#print("r_start: " + str(r_start) + " r_stop: " + str(r_stop) + " c_start:" + str(c_start) + " c_stop: " + str(c_stop) + "size: " + str(float(image.sum())))
-			if image.sum() > 1000116.0:
-				grid[r][c] = prediction(image+255, net, LABELS, COLORS, confidence, threshold)
-				grid[r][c] = 1
-				#print("c:" + str(c) + " r:" + str(r) + " number")
+			#Predict image
+			predictNum =  prediction(image, net, LABELS, COLORS, confidence, threshold)
+			if predictNum != "empty":
+				grid[r][c] = predictNum
 			else:
 				grid[r][c] = 0
-			#print(image)
-			#cv2.imshow("Image", image+255)
+			#cv2.imshow("test", image)
 			#cv2.waitKey(0)
+			
 	print("Complete")
-	grid =  grid.astype(int)
-	solve(grid)
-	#print("___________________")
-	#print_board(grid)
+	grid_solved =  grid.astype(int)
+	solve(grid_solved)
 	print(grid)
+	
+	#For each 0 in grid, replace with the image number gromm solved grid
+	for r in range(points):
+		for c in range(points):
+			if  grid[r][c] == 0:
+				
+				#get predicted number
+				num = grid_solved[r][c]
+
+				#Get number image
+				numImg = cv2.imread(os.path.join(numberFolder, str(num) + ".jpg"))
+
+				#number shape
+				(Hn, Wn) = numImg.shape[:2]
+
+				#write number into sudoku
+				r_start = int(r*gH+gH/2-Hn/2)
+				r_stop = int(r*gH+gH/2 + Hn/2)
+				c_start = int(c*gW+gW/2-Wn/2)
+				c_stop = int(c*gW+gW/2+Wn/2)
+				if r_start < 0:
+					r_start = 0
+				if r_stop > H:
+					r_stop = H
+				if c_start < 0:
+					c_start = 0
+				if c_stop > W:
+					c_stop = W
+				sudoku[r_start:r_stop, c_start:c_stop] = numImg
 
 def prediction(image, net, LABELS, COLORS, confidenceParam, threshold):
 	
@@ -226,17 +253,17 @@ def prediction(image, net, LABELS, COLORS, confidenceParam, threshold):
 		# loop over the indexes we are keeping
 		for i in idxs.flatten():
 			# extract the bounding box coordinates
-			(x, y) = (boxes[i][0], boxes[i][1])
-			(w, h) = (boxes[i][2], boxes[i][3])
+			#(x, y) = (boxes[i][0], boxes[i][1])
+			#(w, h) = (boxes[i][2], boxes[i][3])
 			# draw a bounding box rectangle and label on the image
-			color = [int(c) for c in COLORS[classIDs[i]]]
-			cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
+			#color = [int(c) for c in COLORS[classIDs[i]]]
+			#cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
 			text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
 			print(text)
 			return(LABELS[classIDs[i]])
 	# show the output image
-	cv2.imshow("Image", image)
-	cv2.waitKey(0)
+	#cv2.imshow("Image", image)
+	#cv2.waitKey(0)
 
 if __name__ == '__main__':
 
@@ -264,11 +291,23 @@ if __name__ == '__main__':
 	np.random.seed(42)
 	COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8")
 
+	#Test image
 	image = cv2.imread(args["image"])
+	image = cv2.resize(image, (570, 570))
 
+	#Detection thresholds
 	confidence = args["confidence"]
 	threshold = args["threshold"]
 
-	analizeImage(image, net, LABELS, COLORS, confidence, threshold)
+	#Folder with numbers to insert into blank box
+	numberFolder = os.path.join(args["yolo"], "number")
+
+	#Start analysing image
+	analizeImage(image, net, LABELS, COLORS, confidence, threshold, numberFolder)
+
+	cv2.imwrite(os.path.join(args["yolo"], "result", "result.jpg"), image)
+
+	cv2.imshow("Result", image)
+	cv2.waitKey(0)
 	#bk()
 	#prediction(image, net, LABELS, COLORS,  confidence, threshold)
