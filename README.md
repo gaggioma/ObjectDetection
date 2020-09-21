@@ -59,8 +59,7 @@ With `python3 .\pythonYolo\yolo.py -i sudokuImgToDetect -y folderOfCfgFiles` you
 Some codes line are taken from (https://www.pyimagesearch.com/2018/11/12/yolo-object-detection-with-opencv/)
 
 ## Result
-![sudoku_origin](https://github.com/gaggioma/ObjectDetection/blob/master/img/sudokuFit2.jpg)
-![sudoku_result](https://github.com/gaggioma/ObjectDetection/blob/master/img/result2.jpg)
+![sudoku_result](https://github.com/gaggioma/ObjectDetection/blob/master/img/res.jpg)
 
 ## Further development
 Identifing Sudoku image inside a mixed image. This is make possibile adding a YOLO v4 block before processing phase.
