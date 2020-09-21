@@ -3,3 +3,4 @@
 *.names
 *.cfg
 pythonYolo/__pycache__/*
+.vscode/*
