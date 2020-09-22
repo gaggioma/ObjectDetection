@@ -5,7 +5,7 @@ The target of this project is to apply YOLO v4 object detection alghorithm in a 
 Given Sudoku input image, the main steps are:
 
  1) [Configure YOLO v4 to identify numbers and empty cells](#configure-yolo-v4-to-identify-numbers-and-empty-cells);
- 2) [Establish the position of numbers and empty cells](#establish-the-position-of-number-and-empty-cells);
+ 2) [Position establishment of numbers and empty cells](#establish-the-position-of-number-and-empty-cells);
  3) [Apply a generic alghorithm to resolve the game](#apply-a-generic-alghorithm-to-resolve-the-game)
 
 #### Configure YOLO v4 to identify numbers and empty cells
@@ -42,7 +42,7 @@ The Google Colab notebook with all command is in `GoogleColab/objectDetection.ip
 
 For more details on YOLO v4 watch on https://github.com/AlexeyAB/darknet#pre-trained-models.
 
-#### Establish the position of numbers and empty cells 
+#### Position establishment of numbers and empty cells 
 
 After a sufficient network training, the next step is to identify in the Sudoku image the position of numbers and those of empty cells.
 For this purpose i used python openCV (at least 4.4.0) in which is integrated the use of YOLO v4 network. 
