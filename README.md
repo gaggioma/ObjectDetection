@@ -52,7 +52,7 @@ All details are contained in `pythonYolo/yolo.py`
 
 #### Apply a generic alghorithm to resolve the game
 From this matrix i applied a generic Sudoku resolver to obtain the solution (https://techwithtim.net/tutorials/python-programming/sudoku-solver-backtracking/)
-After that the result numbers are pasted in the original image.
+After, the result numbers (in `number` folder) are pasted in the original image.
 
 ## Pick all together and test the application
 With `python3 .\pythonYolo\yolo.py -i sudokuImgToDetect -y folderOfCfgFiles` you can test the application.
@@ -62,4 +62,5 @@ Some codes line are taken from (https://www.pyimagesearch.com/2018/11/12/yolo-ob
 ![sudoku_result](https://github.com/gaggioma/ObjectDetection/blob/master/img/res.jpg)
 
 ## Further development
-Identifing Sudoku image inside a mixed image. This is make possibile adding a YOLO v4 block before processing phase.
+* identifing Sudoku image inside a mixed image. This is make possibile adding a YOLO v4 block before processing phase;
+* triain YOLO v4 with a more accurate and numerous training set.
