@@ -44,14 +44,14 @@ For more details on YOLO v4 watch on https://github.com/AlexeyAB/darknet#pre-tra
 
 #### Position establishment of numbers and empty cells 
 
-After a sufficient network training, the next step is to identify in the Sudoku image the position of numbers and those of empty cells.
-For this purpose i used python openCV (at least 4.4.0) in which is integrated the use of YOLO v4 network. 
-For this purpose a sliding window of dimension [72,72] is used (centerd in 9 * 9, vetical * horizontal points) in which apply YOLO v4 trained network to identify numbers or empty cells.
-The info of positon and the type of objects are stored in matrix array.
+After a sufficient network training, the next step is to identify in the Sudoku image the position of numbers and that of empty cells.
+For this purpose i used python openCV (at least 4.4.0) in which is integrated the use of YOLO v4. 
+The code implements a sliding window of dimension [72,72] centerd in 9 * 9 equal spaced points, in which apply YOLO v4 trained network to identify numbers or empty cells.
+Infos of positon and the type of objects are stored in matrix array.
 All details are contained in `pythonYolo/yolo.py`
 
 #### Apply a generic alghorithm to resolve the game
-From this matrix i applied a generic Sudoku resolver to obtain the solution (https://techwithtim.net/tutorials/python-programming/sudoku-solver-backtracking/)
+From this matrix i applied a generic Sudoku resolver to obtain the solution (https://techwithtim.net/tutorials/python-programming/sudoku-solver-backtracking/).
 After, the result numbers (in `number` folder) are pasted in the original image.
 
 ## Pick all together and test the application
