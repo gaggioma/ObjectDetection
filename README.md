@@ -1,12 +1,12 @@
 # Sudoku resolver using YOLO v4
 
-The target of this project is to apply YOLO v4 object detection alghorithm in a custom Sudoku resolver.
+The target of this project is to apply YOLO v4 object detection algorithm in a custom Sudoku resolver.
 
 Given Sudoku input image, the main steps are:
 
  1) [Configure YOLO v4 to identify numbers and empty cells](#configure-yolo-v4-to-identify-numbers-and-empty-cells);
  2) [Position establishment of numbers and empty cells](#position-establishment-of-numbers-and-empty-cells);
- 3) [Apply a generic alghorithm to resolve the game](#apply-a-generic-alghorithm-to-resolve-the-game)
+ 3) [Apply a generic algorithm to resolve the game](#apply-a-generic-algorithm-to-resolve-the-game)
 
 #### Configure YOLO v4 to identify numbers and empty cells
 
@@ -50,7 +50,7 @@ The code implements a sliding window of dimension [72,72] centerd in 9 * 9 equal
 Infos of positon and the type of objects are stored in matrix array.
 All details are contained in `pythonYolo/yolo.py`
 
-#### Apply a generic alghorithm to resolve the game
+#### Apply a generic algorithm to resolve the game
 From this matrix i applied a generic Sudoku resolver to obtain the solution (https://techwithtim.net/tutorials/python-programming/sudoku-solver-backtracking/).
 After, the result numbers (in `number` folder) are pasted in the original image.
 
