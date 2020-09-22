@@ -5,7 +5,7 @@ The target of this project is to apply YOLO v4 object detection alghorithm in a 
 Given Sudoku input image, the main steps are:
 
  1) [Configure YOLO v4 to identify numbers and empty cells](#configure-yolo-v4-to-identify-numbers-and-empty-cells);
- 2) [Position establishment of numbers and empty cells](#position-establishment-of-number-and-empty-cells);
+ 2) [Position establishment of numbers and empty cells](#position-establishment-of-numbers-and-empty-cells);
  3) [Apply a generic alghorithm to resolve the game](#apply-a-generic-alghorithm-to-resolve-the-game)
 
 #### Configure YOLO v4 to identify numbers and empty cells
