@@ -38,7 +38,7 @@ Create these compressed folder:
 * `cfg.zip` with the above configuration files.
 * upload to Google Drive.
 
-The Google Colab notebook with all command is in `GoogleColab/objectDetection.ipynb`.
+The Google Colab notebook with all commands is in `GoogleColab/objectDetection.ipynb`.
 
 For more details on YOLO v4 watch on https://github.com/AlexeyAB/darknet#pre-trained-models.
 
