@@ -14,7 +14,7 @@ To achieve this point YOLO v4 has been trained with a dataset of numbers and emp
 An example of dataset structure is contained in `dataset` folder. 
 
 Execute: `python3 .\images\imageResize.py -r "dirOfFolder" -n train -s 620`
-to create in `dirOfFolder/train` or `dirOfFolder/validation`, different images with size [620, 620] that conatains a number/empty cell image with different scale. Every image is coupled with .txt file with bbox infos.
+to create in `dirOfFolder/train` or `dirOfFolder/validation`, differents number images or empty images with size [620, 620] and different scales. Every image is coupled with .txt file with bbox infos.
  
 Nex step is execute: 
 `python3 .\images\listCreator.py -r "dirOfFolder" -n train --type list`
